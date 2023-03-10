@@ -11,7 +11,7 @@ paths:
   /destinations/{country}/vaccines:
     get:
       operationId: "CDCScraper.getVaccines"
-      tags:
+      tags: # TODO what do tags do?
         - "Vaccines"
       summary: "Reads the list of vaccines for {country}"
       parameters:
@@ -25,6 +25,24 @@ paths:
                 $ref: "#/components/schemas/VaccineList"
         "404":
           description: "Country with the specified name not found"
+  /vaccines/{vaccine}/dosages:
+    get:
+      operationId: #TODO
+      tags:
+        - "Vaccines"
+      summary: "Reads the list of dosages for {vaccine}"
+      parameters:
+        - $ref: "#/components/parameters/vaccine"
+      responses:
+        "200":
+          description: "Successfully read dosages list"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DosageList"
+        "404":
+          description: "Vaccine with the specified name not found"
+
 
 components:
   parameters:
@@ -36,6 +54,14 @@ components:
         example: brazil
       required: true
       description: "Name of the country to get"
+    vaccine:
+      name: vaccine
+      in: path
+      schema:
+        type: string
+        example: hepatitis-b
+      required: true
+      description: "Name of the vaccine to get"
   schemas:
     Vaccine:
       type: object
@@ -61,3 +87,29 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Vaccine"
+    Dosage:
+      type: object
+      properties:
+        minAge:
+          type: int
+          description: The minimum age (years) a person should be for the dosage.
+          example: 1
+        maxAge:
+          type: int
+          description: The maximum age (years) a person should be for the dosage.
+          example: 18
+        dose:
+          type: double
+          description: The amount of the dosage (mL).
+          example: 1.5
+        schedule:
+          type: string
+          description: The schedule to take the dosage.
+          example: 3 doses (0, 1, 6 months)
+    DosageList:
+      type: object
+      properties:
+        dosages:
+          type: array
+          items:
+            $ref: "#/components/schemas/Dosage"
